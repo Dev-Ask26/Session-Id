@@ -7,7 +7,6 @@ import crypto from 'crypto';
 
 const router = express.Router();
 
-// MESSAGE remis en haut comme avant
 const MESSAGE = `-
 ━O *ASK-XMD* O━━━━━━━
 ✅ *Connexion établie*
@@ -103,16 +102,17 @@ router.get('/', async (req, res) => {
 
                         await devaskNotBot.sendMessage(user, { 
                             image: { 
-                                url: "https://i.ibb.co/pvk0Mctm/1e4927db575e.jpg" 
+                                url: "https://i.ibb.co/1GwTjv6g/1898e8488a4f.jpg" 
                             }, 
                             caption: MESSAGE,
                             contextInfo: {
+                               isForwarded: true,
                                 mentionedJid: [user],
-                                isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterName: "𝐃𝐄𝐕 𝐀𝐒𝐊 𝐓𝐄𝐂𝐇",
+                                    newsletterName: "𝐀𝐒𝐊 𝐓𝐄𝐂𝐇 || 𝐎𝐅𝐅𝐂",
                                     newsletterJid: `120363330359618597@newsletter`
                                 },
+                                
                             }
                         }, { quoted: msgsss });
 
