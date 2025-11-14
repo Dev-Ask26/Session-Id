@@ -7,19 +7,8 @@ import crypto from 'crypto';
 
 const router = express.Router();
 
-const MESSAGE = process.env.MESSAGE || `-
-━O *ASK-XMD* O━━━━━━━
-✅ *Connexion établie*
-📅 *${dateNow}*
-⏰ *${timeNow}*
-
-●▬▬▬▬๑۩۩๑▬▬▬▬▬●
-□ ➠ *DEV ASK TECH*
-□ ➠ *VERSION 1.1.1*
-□ ➠ *BOT XMD*
-●▬▬▬▬๑۩۩๑▬▬▬▬▬●
-𝓛𝓮 𝓫𝓸𝓽 𝓮𝓼𝓽 𝓸𝓹𝓮𝓻𝓪𝓽𝓲𝓸𝓷𝓷𝓮𝓵  🤖 🚀
-`;
+// Déplacer la définition de MESSAGE après les variables dateNow/timeNow
+let MESSAGE = "";
 
 import { upload } from './mega.js';
 import {
@@ -69,13 +58,29 @@ router.get('/', async (req, res) => {
                     try {
                         await delay(10000);
                         const options = { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-            };
-            const dateNow = new Date().toLocaleDateString('fr-FR', options);
-            const timeNow = new Date().toLocaleTimeString('fr-FR');
+                            weekday: 'long', 
+                            year: 'numeric', 
+                            month: 'long', 
+                            day: 'numeric' 
+                        };
+                        const dateNow = new Date().toLocaleDateString('fr-FR', options);
+                        const timeNow = new Date().toLocaleTimeString('fr-FR');
+                        
+                        // Définir MESSAGE ici avec les variables disponibles
+                        MESSAGE = `-
+━O *ASK-XMD* O━━━━━━━
+✅ *Connexion établie*
+📅 *${dateNow}*
+⏰ *${timeNow}*
+
+●▬▬▬▬๑۩۩๑▬▬▬▬▬●
+□ ➠ *DEV ASK TECH*
+□ ➠ *VERSION 1.1.1*
+□ ➠ *BOT XMD*
+●▬▬▬▬๑۩۩๑▬▬▬▬▬●
+𝓛𝓮 𝓫𝓸𝓽 𝓮𝓼𝓽 𝓸𝓹𝓮𝓻𝓪𝓽𝓲𝓸𝓷𝓷𝓮𝓵  🤖 🚀
+`;
+
                         const auth_path = './session/';
                         const user = devaskNotBot.user.id;
 
