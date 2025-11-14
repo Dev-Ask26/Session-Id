@@ -11,14 +11,6 @@ const router = express.Router();
 const MESSAGE = `-
 ━O *ASK-XMD* O━━━━━━━
 ✅ *Connexion établie*
-📅 *${new Date().toLocaleDateString('fr-FR', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-})}*
-⏰ *${new Date().toLocaleTimeString('fr-FR')}*
-
 ●▬▬▬▬๑۩۩๑▬▬▬▬▬●
 □ ➠ *DEV ASK TECH*
 □ ➠ *VERSION 1.1.1*
