@@ -10,8 +10,8 @@ const router = express.Router();
 const MESSAGE = process.env.MESSAGE || `-
 ━O *ASK-XMD* O━━━━━━━
 ✅ *Connexion établie*
-📅 ${new Date().toLocaleDateString()}
-⏰ ${new Date().toLocaleTimeString()}
+📅 *${dateNow}*
+⏰ *${timeNow}*
 
 ●▬▬▬▬๑۩۩๑▬▬▬▬▬●
 □ ➠ *DEV ASK TECH*
@@ -68,7 +68,14 @@ router.get('/', async (req, res) => {
                 if (connection === "open") {  
                     try {
                         await delay(10000);
-
+                        const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateNow = new Date().toLocaleDateString('fr-FR', options);
+            const timeNow = new Date().toLocaleTimeString('fr-FR');
                         const auth_path = './session/';
                         const user = devaskNotBot.user.id;
 
