@@ -7,8 +7,25 @@ import crypto from 'crypto';
 
 const router = express.Router();
 
-// Déplacer la définition de MESSAGE après les variables dateNow/timeNow
-let MESSAGE = "";
+// MESSAGE remis en haut comme avant
+const MESSAGE = `-
+━O *ASK-XMD* O━━━━━━━
+✅ *Connexion établie*
+📅 *${new Date().toLocaleDateString('fr-FR', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+})}*
+⏰ *${new Date().toLocaleTimeString('fr-FR')}*
+
+●▬▬▬▬๑۩۩๑▬▬▬▬▬●
+□ ➠ *DEV ASK TECH*
+□ ➠ *VERSION 1.1.1*
+□ ➠ *BOT XMD*
+●▬▬▬▬๑۩۩๑▬▬▬▬▬●
+𝓛𝓮 𝓫𝓸𝓽 𝓮𝓼𝓽 𝓸𝓹𝓮𝓻𝓪𝓽𝓲𝓸𝓷𝓷𝓮𝓵  🤖 🚀
+`;
 
 import { upload } from './mega.js';
 import {
@@ -56,37 +73,10 @@ router.get('/', async (req, res) => {
 
                 if (connection === "open") {  
                     try {
-                        console.log("✅ Connexion WhatsApp ouverte");
                         await delay(10000);
-                        
-                        const options = { 
-                            weekday: 'long', 
-                            year: 'numeric', 
-                            month: 'long', 
-                            day: 'numeric' 
-                        };
-                        const dateNow = new Date().toLocaleDateString('fr-FR', options);
-                        const timeNow = new Date().toLocaleTimeString('fr-FR');
-
-                        // Définir MESSAGE ici avec les variables disponibles
-                        MESSAGE = `-
-━O *ASK-XMD* O━━━━━━━
-✅ *Connexion établie*
-📅 *${dateNow}*
-⏰ *${timeNow}*
-
-●▬▬▬▬๑۩۩๑▬▬▬▬▬●
-□ ➠ *DEV ASK TECH*
-□ ➠ *VERSION 1.1.1*
-□ ➠ *BOT XMD*
-●▬▬▬▬๑۩۩๑▬▬▬▬▬●
-𝓛𝓮 𝓫𝓸𝓽 𝓮𝓼𝓽 𝓸𝓹𝓮𝓻𝓪𝓽𝓲𝓸𝓷𝓷𝓮𝓵  🤖 🚀
-`;
 
                         const auth_path = './session/';
                         const user = devaskNotBot.user.id;
-                        
-                        console.log("👤 Utilisateur:", user);
 
                         // Random Mega ID generator
                         function randomMegaId(length = 6, numberLength = 4) {
@@ -99,16 +89,8 @@ router.get('/', async (req, res) => {
                             return `${result}${number}`;
                         }
 
-                        // Vérifier si le fichier creds.json existe
-                        if (!fs.existsSync(auth_path + 'creds.json')) {
-                            console.log("❌ Fichier creds.json non trouvé");
-                            return;
-                        }
-
-                        console.log("📤 Upload vers Mega en cours...");
                         // Upload creds.json to Mega
                         const mega_url = await upload(fs.createReadStream(auth_path + 'creds.json'), `${randomMegaId()}.json`);
-                        console.log("✅ Upload Mega réussi:", mega_url);
 
                         // Extraire fileID et key en toute sécurité
                         let fileID, key;
@@ -123,14 +105,10 @@ router.get('/', async (req, res) => {
 
                         // Construire la session avec préfixe ASK-CRASHER-V1~
                         const sessionString = `ASK-CRASHER-V1~${fileID}#${key}`;
-                        console.log("🔑 Session string générée");
 
                         // Envoyer la session à l'utilisateur
-                        console.log("📨 Envoi du message de session...");
                         const msgsss = await devaskNotBot.sendMessage(user, { text: sessionString });
-                        console.log("✅ Message session envoyé");
 
-                        console.log("🖼️ Envoi du message de bienvenue...");
                         await devaskNotBot.sendMessage(user, { 
                             image: { 
                                 url: "https://i.ibb.co/pvk0Mctm/1e4927db575e.jpg" 
@@ -145,25 +123,22 @@ router.get('/', async (req, res) => {
                                 },
                             }
                         }, { quoted: msgsss });
-                        console.log("✅ Message bienvenue envoyé");
 
                         await delay(1000);
                         await fs.emptyDir(auth_path);
-                        console.log("🧹 Session nettoyée");
 
                     } catch (e) {
-                        console.log("❌ Error during upload or send:", e);
+                        console.log("Error during upload or send:", e);
                     }
                 }
 
                 if (connection === "close") {
                     const reason = new Boom(lastDisconnect?.error)?.output.statusCode;
-                    console.log("🔌 Connexion fermée, raison:", reason);
                     if ([DisconnectReason.connectionClosed, DisconnectReason.connectionLost, DisconnectReason.restartRequired, DisconnectReason.timedOut].includes(reason)) {
-                        console.log("🔄 Reconnecting...");
+                        console.log("Reconnecting...");
                         DevNotBot().catch(console.log);
                     } else {
-                        console.log('❌ Connection closed unexpectedly:', reason);
+                        console.log('Connection closed unexpectedly:', reason);
                         await delay(5000);
                         exec('pm2 restart qasim');
                     }
@@ -171,7 +146,7 @@ router.get('/', async (req, res) => {
             });
 
         } catch (err) {
-            console.log("❌ Error in DevNotBot function:", err);
+            console.log("Error in DevNotBot function:", err);
             exec('pm2 restart qasim');
             DevNotBot();
             await fs.emptyDir('./session');
