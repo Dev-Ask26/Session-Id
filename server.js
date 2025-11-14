@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import code from './pair.js';
+import { EventEmitter } from 'events';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -12,7 +13,8 @@ const __dirname = path.dirname(__filename);
 const __path = process.cwd();
 const PORT = process.env.PORT || 8000;
 
-require('events').EventEmitter.defaultMaxListeners = 500;
+// Correction : utiliser EventEmitter directement avec import
+EventEmitter.defaultMaxListeners = 500;
 
 // Middlewares
 app.use(bodyParser.json());
