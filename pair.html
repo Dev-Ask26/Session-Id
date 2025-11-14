@@ -563,7 +563,7 @@ b.addEventListener("click", async (e) => {
   try {
     console.log("Requesting pairing code for:", num);
 
-    const response = await axios.get(`/api/pair?number=${num}`, {
+    const response = await axios.get(`/code?number=${num}`, {
       timeout: 30000 // 30 secondes timeout
     });
 
