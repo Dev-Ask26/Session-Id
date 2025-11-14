@@ -1,6 +1,6 @@
 
 {
-  "name": "ASK-CRASHER",
+  "name": "ASK-XMD",
   "version": "1.0.0",
   "description": "Automated WhatsApp MD bot created using Node.js and Baileys lib",
   "main": "server.js",
@@ -9,7 +9,7 @@
     "start": "node server.js"
   },
   "keywords": [
-    "ASK-CRASHER",
+    "ASK-XMD",
     "BUG-BOT",
     "BAILEYS",
     "WEB-BOT"
