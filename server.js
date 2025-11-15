@@ -1,19 +1,16 @@
 // ==================== server.js ====================
-import express from 'express';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import bodyParser from 'body-parser';
-import code from './pair.js';
-import { EventEmitter } from 'events';
+const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const bodyParser = require('body-parser');
+const code = require('./pair.js');
+const { EventEmitter } = require('events');
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const __path = process.cwd();
 const PORT = process.env.PORT || 8000;
 
-// Correction : utiliser EventEmitter directement avec import
+// Correction : utiliser EventEmitter directement avec require
 EventEmitter.defaultMaxListeners = 500;
 
 // Middlewares
@@ -31,4 +28,4 @@ app.listen(PORT, () => {
     console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
 
-export default app;
+module.exports = app;
