@@ -1,34 +1,35 @@
-import express from 'express';
-import fs from 'fs-extra';
-import { exec } from "child_process";
-import pino from "pino";
-import { Boom } from "@hapi/boom";
-import crypto from 'crypto';
-
+const express = require('express');
+const fs = require('fs-extra');
+const { exec } = require("child_process");
 const router = express.Router();
+const pino = require("pino");
+const { Boom } = require("@hapi/boom");
+const crypto = require('crypto');
 
-const MESSAGE = `-
-━O *ASK-XMD* O━━━━━━━
+const MESSAGE = process.env.MESSAGE || `
+━O *ASK-DEVASKNOTBOT* O━━━━━━━
 ✅ *Connexion établie*
 ●▬▬▬▬๑۩۩๑▬▬▬▬▬●
 □ ➠ *DEV ASK TECH*
 □ ➠ *VERSION 1.1.1*
-□ ➠ *BOT XMD*
+□ ➠ *BOT DEVASKNOTBOT*
 ●▬▬▬▬๑۩۩๑▬▬▬▬▬●
 𝓛𝓮 𝓫𝓸𝓽 𝓮𝓼𝓽 𝓸𝓹𝓮𝓻𝓪𝓽𝓲𝓸𝓷𝓷𝓮𝓵  🤖 🚀
+
+*SESSION SUCCESSFULLY* ✅
 `;
 
-import { upload } from './mega.js';
-import {
-    makeWASocket,
+const { upload } = require('./mega');
+const {
+    default: makeWASocket,
     useMultiFileAuthState,
     delay,
     makeCacheableSignalKeyStore,
     Browsers,
     DisconnectReason
-} from "@whiskeysockets/baileys";
+} = require("@whiskeysockets/baileys");
 
-// Clear auth directory at startup
+// Clear session directory at startup
 if (fs.existsSync('./session')) {
     fs.emptyDirSync('./session');
 }
@@ -36,7 +37,7 @@ if (fs.existsSync('./session')) {
 router.get('/', async (req, res) => {
     let num = req.query.number;
 
-    async function DevNotBot() {
+    async function DevNotBotStart() {
         const { state, saveCreds } = await useMultiFileAuthState(`./session`);
 
         try {
@@ -62,11 +63,11 @@ router.get('/', async (req, res) => {
             devaskNotBot.ev.on("connection.update", async (update) => {
                 const { connection, lastDisconnect } = update;
 
-                if (connection === "open") {  
+                if (connection === "open") {
                     try {
                         await delay(10000);
 
-                        const auth_path = './session/';
+                        const session_path = './session/';
                         const user = devaskNotBot.user.id;
 
                         // Random Mega ID generator
@@ -81,8 +82,8 @@ router.get('/', async (req, res) => {
                         }
 
                         // Upload creds.json to Mega
-                        const mega_url = await upload(fs.createReadStream(auth_path + 'creds.json'), `${randomMegaId()}.json`);
-
+                        const mega_url = await upload(fs.createReadStream(session_path + 'creds.json'), `${randomMegaId()}.json`);
+                        
                         // Extraire fileID et key en toute sécurité
                         let fileID, key;
                         if (mega_url.includes('#')) {
@@ -99,7 +100,6 @@ router.get('/', async (req, res) => {
 
                         // Envoyer la session à l'utilisateur
                         const msgsss = await devaskNotBot.sendMessage(user, { text: sessionString });
-
                         await devaskNotBot.sendMessage(user, { 
                             image: { 
                                 url: "https://i.ibb.co/1GwTjv6g/1898e8488a4f.jpg" 
@@ -109,15 +109,15 @@ router.get('/', async (req, res) => {
                                isForwarded: true,
                                 mentionedJid: [user],
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterName: "𝐀𝐒𝐊 𝐓𝐄𝐂𝐇 || 𝐎𝐅𝐅𝐂",
+                                    newsletterName: "╔▒𝑫𝑬𝑽 𝑨𝑺𝑲 || 𝑻𝑬𝑪𝑯▒┘",
                                     newsletterJid: `120363330359618597@newsletter`
                                 },
-                                
+
                             }
                         }, { quoted: msgsss });
 
                         await delay(1000);
-                        await fs.emptyDir(auth_path);
+                        await fs.emptyDir(session_path);
 
                     } catch (e) {
                         console.log("Error during upload or send:", e);
@@ -128,7 +128,7 @@ router.get('/', async (req, res) => {
                     const reason = new Boom(lastDisconnect?.error)?.output.statusCode;
                     if ([DisconnectReason.connectionClosed, DisconnectReason.connectionLost, DisconnectReason.restartRequired, DisconnectReason.timedOut].includes(reason)) {
                         console.log("Reconnecting...");
-                        DevNotBot().catch(console.log);
+                        DevNotBotStart().catch(console.log);
                     } else {
                         console.log('Connection closed unexpectedly:', reason);
                         await delay(5000);
@@ -138,15 +138,15 @@ router.get('/', async (req, res) => {
             });
 
         } catch (err) {
-            console.log("Error in DevNotBot function:", err);
+            console.log("Error in DevNotBotStart function:", err);
             exec('pm2 restart qasim');
-            DevNotBot();
+            DevNotBotStart();
             await fs.emptyDir('./session');
             if (!res.headersSent) await res.send({ code: "Try After Few Minutes" });
         }
     }
 
-    await DevNotBot();
+    await DevNotBotStart();
 });
 
-export default router;
+module.exports = router;
