@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Automated WhatsApp MD bot created using Node.js and Baileys lib",
   "main": "server.js",
-  "type": "module",
+  "type": "commonjs",
   "scripts": {
     "start": "node server.js"
   },
